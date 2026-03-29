@@ -1,17 +1,40 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 
 function Checkout({ cart, setCart }) {
   const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  useEffect(() => {
+    if (!user) {
+      alert("Please login first ❌");
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
   );
 
-  const placeOrder = () => {
-    alert("Order placed successfully! 🎉");
-    setCart([]); // ✅ clear cart
-    navigate("/"); // ✅ go to home
+  const placeOrder = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/orders", {
+        user: user.email,
+        items: cart,
+        total: totalPrice
+      });
+
+      alert("Order placed successfully 🎉");
+
+      setCart([]);
+      navigate("/");
+
+    } catch (error) {
+      alert("Order failed ❌");
+    }
   };
 
   return (
@@ -23,28 +46,14 @@ function Checkout({ cart, setCart }) {
       ) : (
         <>
           {cart.map((item) => (
-            <div key={item._id} style={{ marginBottom: "10px" }}>
+            <div key={item._id}>
               {item.name} - ₹ {item.price} × {item.qty}
             </div>
           ))}
 
           <h3>Total: ₹ {totalPrice}</h3>
 
-          <h3>Enter Details</h3>
-
-          <input placeholder="Name" /><br /><br />
-          <input placeholder="Address" /><br /><br />
-
-          <button
-            onClick={placeOrder}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "blue",
-              color: "white",
-              border: "none",
-              cursor: "pointer"
-            }}
-          >
+          <button onClick={placeOrder}>
             Place Order
           </button>
         </>

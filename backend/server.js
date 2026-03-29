@@ -2,21 +2,29 @@ const cors = require("cors");
 const express = require("express");
 const connectDB = require("./config/db");
 
-connectDB(); // ✅ ADD HERE
+const productRoutes = require("./routes/productRoutes");
+const userRoutes = require("./routes/userRoutes");
+const orderRoutes = require("./routes/orderRoutes"); // ✅ NEW
+
+connectDB();
 
 const app = express();
-app.use(cors());
 
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-const productRoutes = require("./routes/productRoutes");
-
+// Routes
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes); // ✅ NEW
 
+// Test route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Server
 const PORT = 5000;
 
 app.listen(PORT, () => {

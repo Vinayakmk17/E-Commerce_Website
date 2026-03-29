@@ -34,7 +34,12 @@ function ProductCard({ product, addToCart }) {
       <p style={{ fontWeight: "bold", color: "green" }}>
         ₹ {product.price}
       </p>
+      
+<p>⭐ {product.rating} ({product.numReviews})</p>
 
+{product.sizes?.length > 0 && (
+  <p>Sizes: {product.sizes.join(", ")}</p>
+)}
       <button
         onClick={() => addToCart(product)}
         style={{

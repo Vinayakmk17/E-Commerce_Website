@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 import Checkout from "./components/Checkout";
 import Navbar from "./components/Navbar";
-import ProductCard from "./components/ProductCard";
 import Cart from "./components/Cart";
 import ProductDetails from "./components/ProductDetails";
+import Login from "./components/Login";
+import Home from "./pages/Home";
+import Footer from "./components/Footer";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -61,7 +64,6 @@ function App() {
     <Router>
       <Navbar cartCount={cart.length} />
 
-      {/* ✅ MAIN BACKGROUND */}
       <div
         style={{
           padding: "20px",
@@ -70,31 +72,18 @@ function App() {
         }}
       >
         <Routes>
-<Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
-          {/* HOME PAGE */}
           <Route
             path="/"
-            element={
-              <div
-                style={{
-                  display: "flex",
-                  gap: "30px",
-                  flexWrap: "wrap",
-                  justifyContent: "center"
-                }}
-              >
-                {products.map((product) => (
-                  <ProductCard
-                    key={product._id}
-                    product={product}
-                    addToCart={addToCart}
-                  />
-                ))}
-              </div>
-            }
+            element={<Home products={products} addToCart={addToCart} />}
           />
 
-          {/* CART PAGE */}
+          <Route path="/login" element={<Login />} />
+
+          <Route
+            path="/checkout"
+            element={<Checkout cart={cart} setCart={setCart} />}
+          />
+
           <Route
             path="/cart"
             element={
@@ -107,7 +96,6 @@ function App() {
             }
           />
 
-          {/* PRODUCT DETAILS */}
           <Route
             path="/product/:id"
             element={
@@ -117,9 +105,12 @@ function App() {
               />
             }
           />
-
         </Routes>
       </div>
+
+      {/* ✅ FOOTER ADDED HERE */}
+      <Footer />
+
     </Router>
   );
 }
